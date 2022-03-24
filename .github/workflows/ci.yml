@@ -39,6 +39,6 @@ jobs:
           ~/.cargo/git
           target
         key: lint-cargo-${{ hashFiles('**/Cargo.lock') }}
-    - run: >
+    - run: |
         cargo fmt --check
         cargo clippy
