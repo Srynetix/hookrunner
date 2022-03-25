@@ -764,6 +764,7 @@ dependencies = [
  "hex",
  "hmac",
  "hyper",
+ "once_cell",
  "opentelemetry",
  "opentelemetry-jaeger",
  "pretty_assertions",
@@ -785,6 +786,7 @@ dependencies = [
  "tracing-opentelemetry",
  "tracing-subscriber",
  "tracing-tree",
+ "url",
  "which",
  "wiremock",
 ]

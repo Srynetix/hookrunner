@@ -1,4 +1,7 @@
+use std::{net::SocketAddr, path::PathBuf};
+
 use clap::Parser;
+use url::Url;
 
 use crate::git::{GitBackend, RefType, RepositoryPath};
 
@@ -8,15 +11,15 @@ use crate::git::{GitBackend, RefType, RepositoryPath};
 pub struct Args {
     /// Telemetry URL (disabled as default)
     #[clap(long)]
-    pub telemetry_url: Option<String>,
+    pub telemetry_url: Option<Url>,
 
     /// GitHub API URL (https://api.github.com as default)
     #[clap(long)]
-    pub github_api_url: Option<String>,
+    pub github_api_url: Option<Url>,
 
     /// Working directory (current directory as default)
     #[clap(long)]
-    pub working_dir: Option<String>,
+    pub working_dir: Option<PathBuf>,
 
     /// Webhook secret (disabled as default)
     #[clap(long)]
@@ -26,10 +29,6 @@ pub struct Args {
     #[clap(long)]
     pub repo_mapping: Option<String>,
 
-    /// Bind IP
-    #[clap(long)]
-    pub bind_ip: Option<String>,
-
     /// Command
     #[clap(subcommand)]
     pub command: SubCommand,
@@ -38,13 +37,20 @@ pub struct Args {
 #[derive(Parser, Debug)]
 pub enum SubCommand {
     /// Run server
-    Run,
+    Serve(ServeCommand),
     /// Install webhook
     Install(InstallCommand),
     /// Uninstall webhook
     Uninstall(InstallCommand),
     /// Synchronize
     Synchronize(SynchronizeCommand),
+}
+
+#[derive(Parser, Debug)]
+pub struct ServeCommand {
+    /// Bind IP
+    #[clap(long)]
+    pub bind_ip: Option<SocketAddr>,
 }
 
 #[derive(Parser, Debug)]
@@ -59,11 +65,7 @@ pub struct InstallCommand {
 
     /// URL to register
     #[clap(long)]
-    pub url: String,
-
-    /// API username
-    #[clap(long)]
-    pub username: String,
+    pub url: Url,
 
     /// API token
     #[clap(long)]
@@ -82,11 +84,7 @@ pub struct UninstallCommand {
 
     /// URL to unregister
     #[clap(long)]
-    pub url: String,
-
-    /// API username
-    #[clap(long)]
-    pub username: String,
+    pub url: Url,
 
     /// API token
     #[clap(long)]

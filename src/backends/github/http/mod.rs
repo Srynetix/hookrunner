@@ -524,7 +524,7 @@ mod tests {
         std::fs::create_dir(tempdir.path().join("things")).unwrap();
 
         let mut config = create_test_config();
-        config.set_working_dir(tempdir.path().to_string_lossy());
+        config.set_working_dir(tempdir.path());
 
         let services = create_test_services();
         let app = build_http_router(config, services.clone());

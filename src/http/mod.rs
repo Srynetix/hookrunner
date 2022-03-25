@@ -1,5 +1,3 @@
-use std::{net::SocketAddr, str::FromStr};
-
 use axum::{
     body,
     extract::Extension,
@@ -14,7 +12,7 @@ use tower_http::{trace::TraceLayer, ServiceBuilderExt};
 
 use crate::{
     backends::github::middleware::VerifyGitHubSignatureLayer,
-    config::Config,
+    config::{Config, ServerConfig},
     error::{ErrorCode, ErrorCodeDetail},
     server_info::ServerInfo,
     service::ServiceHandler,
@@ -40,12 +38,15 @@ async fn root() -> Json<ServerInfo> {
 }
 
 #[tracing::instrument]
-pub async fn start_server(config: Config, services: ServiceHandler) -> color_eyre::Result<()> {
-    let addr = SocketAddr::from_str(config.bind_ip()).unwrap();
+pub async fn start_server(
+    server_config: ServerConfig,
+    config: Config,
+    services: ServiceHandler,
+) -> color_eyre::Result<()> {
     let app = build_http_router(config, services);
-    tracing::info!("listening on {}", addr);
+    tracing::info!("listening on {}", server_config.bind_ip());
 
-    axum::Server::bind(&addr)
+    axum::Server::bind(server_config.bind_ip())
         .serve(app.into_make_service())
         .await?;
 

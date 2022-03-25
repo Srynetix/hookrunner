@@ -18,7 +18,7 @@ impl TracingSetup {
 
         if let Some(telemetry_url) = config.telemetry_url() {
             let tracer = opentelemetry_jaeger::new_pipeline()
-                .with_agent_endpoint(&telemetry_url)
+                .with_agent_endpoint(telemetry_url.as_str())
                 .install_batch(opentelemetry::runtime::Tokio)?;
             let telemetry = tracing_opentelemetry::layer().with_tracer(tracer);
 
