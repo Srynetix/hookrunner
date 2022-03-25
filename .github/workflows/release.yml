@@ -1,0 +1,26 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./.github/actions/prepare
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: cargo-${{ hashFiles('**/Cargo.lock') }}
+    - run: cargo build --release
+    - uses: actions/upload-artifact@v3
+      with:
+        name: hookrunner-linux
+        path: ./target/release/hookrunner
